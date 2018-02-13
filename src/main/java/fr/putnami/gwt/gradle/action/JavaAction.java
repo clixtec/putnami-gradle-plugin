@@ -23,6 +23,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 
+import fr.putnami.gwt.gradle.util.StringUtils;
+
 public class JavaAction implements Action<Task> {
 
 	public static class ProcessLogger extends Thread {
@@ -65,14 +67,14 @@ public class JavaAction implements Action<Task> {
 		}
 	}
 
-	private final String javaCommand;
+	private final String[] javaCommand;
 
 	private Process process;
 
 	private ProcessLogger errorLogger = new ProcessLogger();
 	private ProcessLogger infoLogger = new ProcessLogger();
 
-	public JavaAction(String javaCommand) {
+	public JavaAction(String[] javaCommand) {
 		super();
 		this.javaCommand = javaCommand;
 	}
@@ -80,7 +82,7 @@ public class JavaAction implements Action<Task> {
 	@Override
 	public void execute(Task task) {
 		try {
-			task.getLogger().info(javaCommand);
+			task.getLogger().info(StringUtils.join(" ", javaCommand));
 			process = Runtime.getRuntime().exec(javaCommand);
 
 			Runtime.getRuntime().addShutdownHook(new Thread() {
