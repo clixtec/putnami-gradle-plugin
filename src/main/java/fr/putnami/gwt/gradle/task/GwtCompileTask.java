@@ -16,7 +16,11 @@ package fr.putnami.gwt.gradle.task;
 
 import com.google.common.base.Strings;
 
+import org.gradle.api.Action;
 import org.gradle.api.Project;
+import org.gradle.api.artifacts.Configuration;
+import org.gradle.api.artifacts.ProjectDependency;
+import org.gradle.api.file.ConfigurableFileCollection;
 import org.gradle.api.file.FileCollection;
 import org.gradle.api.internal.ConventionMapping;
 import org.gradle.api.internal.IConventionAware;
@@ -77,15 +81,20 @@ public class GwtCompileTask extends AbstractTask {
 
 	public void configure(final Project project, final PutnamiExtension extention) {
 		final CompilerOption options = extention.getCompile();
-		options.init(getProject());
+		options.init(project);
 		options.setLocalWorkers(evalWorkers(options));
 
-		JavaPluginConvention javaConvention = project.getConvention().getPlugin(JavaPluginConvention.class);
-		SourceSet mainSourceSet = javaConvention.getSourceSets().getByName(SourceSet.MAIN_SOURCE_SET_NAME);
-		final FileCollection sources = getProject()
-			.files(project.files(mainSourceSet.getOutput().getResourcesDir()))
-			.plus(project.files(mainSourceSet.getOutput().getClassesDirs()))
-			.plus(getProject().files(mainSourceSet.getAllSource().getSrcDirs()));
+		final ConfigurableFileCollection sources = project.files();
+		addSourceSet(sources, project, SourceSet.MAIN_SOURCE_SET_NAME);
+
+		final Configuration compileClasspath = project.getConfigurations().getByName(
+			JavaPlugin.COMPILE_CLASSPATH_CONFIGURATION_NAME);
+		compileClasspath.getDependencies().withType(ProjectDependency.class, new Action<ProjectDependency>() {
+			@Override
+			public void execute(ProjectDependency dep) {
+				addSourceSet(sources, dep.getDependencyProject(), SourceSet.MAIN_SOURCE_SET_NAME);
+			}
+		});
 
 		ConventionMapping mapping = ((IConventionAware) this).getConventionMapping();
 
@@ -107,6 +116,14 @@ public class GwtCompileTask extends AbstractTask {
 				return sources;
 			}
 		});
+	}
+
+	private void addSourceSet(FileCollection sources, Project project, String sourceSet) {
+		JavaPluginConvention javaConvention = project.getConvention().getPlugin(JavaPluginConvention.class);
+		SourceSet mainSourceSet = javaConvention.getSourceSets().getByName(sourceSet);
+		sources.add(project.files(mainSourceSet.getOutput().getResourcesDir()))
+			.plus(project.files(mainSourceSet.getOutput().getClassesDirs()))
+			.plus(project.files(mainSourceSet.getAllSource().getSrcDirs()));
 	}
 
 	private int evalWorkers(CompilerOption options) {
