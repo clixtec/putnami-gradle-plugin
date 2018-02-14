@@ -14,16 +14,16 @@
  */
 package fr.putnami.gwt.gradle.action;
 
-import org.gradle.api.Action;
-import org.gradle.api.Task;
-import org.gradle.api.logging.LogLevel;
-
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 
-import fr.putnami.gwt.gradle.util.StringUtils;
+import org.gradle.api.Action;
+import org.gradle.api.Task;
+import org.gradle.api.logging.LogLevel;
+
+import com.google.common.base.Joiner;
 
 public class JavaAction implements Action<Task> {
 
@@ -82,7 +82,7 @@ public class JavaAction implements Action<Task> {
 	@Override
 	public void execute(Task task) {
 		try {
-			task.getLogger().info(StringUtils.join(" ", javaCommand));
+			task.getLogger().info(Joiner.on(" ").join(javaCommand));
 			process = Runtime.getRuntime().exec(javaCommand);
 
 			Runtime.getRuntime().addShutdownHook(new Thread() {
