@@ -27,46 +27,6 @@ import java.io.InputStreamReader;
 
 public class JavaAction implements Action<Task> {
 
-	public static class ProcessLogger extends Thread {
-		private InputStream stream;
-		private LogLevel level;
-		private boolean quit = false;
-
-		public void setStream(InputStream stream) {
-			this.stream = stream;
-		}
-
-		public void setLevel(LogLevel level) {
-			this.level = level;
-		}
-
-		@Override
-		public void run() {
-			try (BufferedReader input = new BufferedReader(new InputStreamReader(stream))) {
-				String line = input.readLine();
-				while (!quit && line != null) {
-					printLine(line);
-					line = input.readLine();
-				}
-				stream.close();
-			} catch (IOException e) {
-				throw new RuntimeException(e);
-			}
-		}
-
-		protected void printLine(String line) {
-			if (level == LogLevel.ERROR) {
-				System.err.println(line);
-			} else {
-				System.out.println(line);
-			}
-		}
-
-		public void quitLogger() {
-			quit = true;
-		}
-	}
-
 	private final String[] javaCommand;
 
 	private Process process;
@@ -139,6 +99,46 @@ public class JavaAction implements Action<Task> {
 			return false;
 		} catch (IllegalThreadStateException e) {
 			return true;
+		}
+	}
+
+	public static class ProcessLogger extends Thread {
+		private InputStream stream;
+		private LogLevel level;
+		private boolean quit = false;
+
+		public void setStream(InputStream stream) {
+			this.stream = stream;
+		}
+
+		public void setLevel(LogLevel level) {
+			this.level = level;
+		}
+
+		@Override
+		public void run() {
+			try (BufferedReader input = new BufferedReader(new InputStreamReader(stream))) {
+				String line = input.readLine();
+				while (!quit && line != null) {
+					printLine(line);
+					line = input.readLine();
+				}
+				stream.close();
+			} catch (IOException e) {
+				throw new RuntimeException(e);
+			}
+		}
+
+		protected void printLine(String line) {
+			if (level == LogLevel.ERROR) {
+				System.err.println(line);
+			} else {
+				System.out.println(line);
+			}
+		}
+
+		public void quitLogger() {
+			quit = true;
 		}
 	}
 
