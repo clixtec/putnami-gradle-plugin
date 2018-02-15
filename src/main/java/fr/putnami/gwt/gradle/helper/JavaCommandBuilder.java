@@ -103,11 +103,6 @@ public abstract class JavaCommandBuilder {
 		}
 	}
 
-//	@Override
-//	public String toString() {
-//		return StringUtils.join(" ", toStringArray());
-//	}
-
 	public String[] toStringArray() {
 		List<String> pieces = new ArrayList<String>();
 		pieces.add(javaExec);
@@ -116,19 +111,17 @@ public abstract class JavaCommandBuilder {
 			pieces.add(arg);
 		}
 
-		if (classPaths.size() > 0) {
-			pieces.add("-cp");
-			int i = 0;
-			StringBuilder sb = new StringBuilder();
-			for (String classPath : classPaths) {
-				if (!Strings.isNullOrEmpty(classPath.trim())) {
-					if (sb.length() > 0) {
-						sb.append(System.getProperty("path.separator"));
-					}
-					sb.append(classPath.trim());
-					i++;
+		StringBuilder sb = new StringBuilder();
+		for (String classPath : classPaths) {
+			if (!Strings.isNullOrEmpty(classPath.trim())) {
+				if (sb.length() > 0) {
+					sb.append(System.getProperty("path.separator"));
 				}
+				sb.append(classPath.trim());
 			}
+		}
+		if (sb.length() > 0) {
+			pieces.add("-cp");
 			pieces.add(sb.toString());
 		}
 
