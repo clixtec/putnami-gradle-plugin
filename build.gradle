@@ -34,7 +34,7 @@ dependencies {
 	compile "com.google.guava:guava:23.5-jre"
 }
 
-checkstyle{
+checkstyle {
 	configFile rootProject.file('settings/checkstyle/pwt-checkstyle.xml')
 }
 
