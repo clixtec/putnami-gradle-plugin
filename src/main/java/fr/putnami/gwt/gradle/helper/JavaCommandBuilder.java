@@ -148,7 +148,7 @@ public abstract class JavaCommandBuilder {
 		}
 		if (javaOptions.isDebugJava()) {
 			StringBuilder sb = new StringBuilder();
-			sb.append("-Xdebug -Xrunjdwp:server=y,transport=dt_socket,address=");
+			sb.append("-agentlib:jdwp=server=y,transport=dt_socket,address=");
 			sb.append(javaOptions.getDebugPort());
 			sb.append(",suspend=");
 			sb.append(javaOptions.isDebugSuspend() ? "y" : "n");
