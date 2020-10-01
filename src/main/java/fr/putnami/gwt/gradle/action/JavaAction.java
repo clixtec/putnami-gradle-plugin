@@ -14,8 +14,6 @@
  */
 package fr.putnami.gwt.gradle.action;
 
-import com.google.common.base.Joiner;
-
 import org.gradle.api.Action;
 import org.gradle.api.Task;
 import org.gradle.api.logging.LogLevel;
@@ -25,25 +23,31 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 
+import fr.putnami.gwt.gradle.helper.JavaExecutor;
+
 public class JavaAction implements Action<Task> {
 
-	private final String[] javaCommand;
+	private final JavaExecutor javaCommand;
 
 	private Process process;
 
 	private ProcessLogger errorLogger = new ProcessLogger();
 	private ProcessLogger infoLogger = new ProcessLogger();
 
-	public JavaAction(String[] javaCommand) {
+	public JavaAction(JavaExecutor java) {
 		super();
-		this.javaCommand = javaCommand;
+		this.javaCommand = java;
+	}
+
+	public JavaAction(String mainClass) {
+		this(new JavaExecutor(mainClass));
 	}
 
 	@Override
 	public void execute(Task task) {
 		try {
-			task.getLogger().info(Joiner.on(" ").join(javaCommand));
-			process = Runtime.getRuntime().exec(javaCommand);
+			task.getLogger().info(javaCommand.getCommandLine());
+			process = javaCommand.runProcess();
 
 			Runtime.getRuntime().addShutdownHook(new Thread() {
 				@Override
@@ -73,27 +77,31 @@ public class JavaAction implements Action<Task> {
 	public void kill() {
 		errorLogger.quitLogger();
 		infoLogger.quitLogger();
-		process.destroy();
-		try {
-			process.waitFor();
-		} catch (InterruptedException e) {
-			throw new RuntimeException(e);
+		if (process != null) {
+			process.destroy();
+			join();
 		}
 	}
 
 	public void join() {
-		try {
-			process.waitFor();
-		} catch (InterruptedException e) {
-			throw new RuntimeException(e);
+		if (process != null) {
+			try {
+				process.waitFor();
+			} catch (InterruptedException e) {
+				throw new RuntimeException(e);
+			}
 		}
 	}
 
 	public int exitValue() {
-		return process.exitValue();
+		return (process == null) ? 0 : process.exitValue();
 	}
 
 	public boolean isAlive() {
+		if (process == null) {
+			return false;
+		}
+		
 		try {
 			process.exitValue();
 			return false;
