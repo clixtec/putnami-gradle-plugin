@@ -14,8 +14,6 @@
  */
 package fr.putnami.gwt.gradle.util;
 
-import com.google.common.io.ByteStreams;
-
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
@@ -57,7 +55,11 @@ public final class ResourceUtils {
 		InputStream input = ResourceUtils.class.getResource(resourcePath).openStream();
 		ByteArrayOutputStream out = new ByteArrayOutputStream();
 
-		ByteStreams.copy(input, out);
+		int b = input.read();
+		while(b >= 0){
+			out.write(b);
+			b = input.read();
+		}
 
 		String template = new String(out.toByteArray());
 		// Resources.toString(url, Charsets.UTF_8);

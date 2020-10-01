@@ -14,7 +14,7 @@
  */
 package fr.putnami.gwt.gradle.extension;
 
-import com.google.common.collect.Lists;
+import java.util.ArrayList;
 
 import org.gradle.util.ConfigureUtil;
 
@@ -39,7 +39,7 @@ public class PutnamiExtension {
 	/**
 	 * GWT Module to compile.
 	 */
-	private final List<String> module = Lists.newArrayList();
+	private final List<String> module = new ArrayList<>();
 
 	private CompilerOption compile = new CompilerOption();
 	private DevOption dev = new DevOption();

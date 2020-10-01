@@ -14,9 +14,8 @@
  */
 package fr.putnami.gwt.gradle.task;
 
-import com.google.common.base.Strings;
-import com.google.common.collect.ImmutableMap;
-import com.google.common.collect.Lists;
+import java.util.ArrayList;
+import java.util.HashMap;
 
 import org.gradle.api.Action;
 import org.gradle.api.Project;
@@ -50,7 +49,7 @@ public class GwtDevTask extends AbstractTask {
 
 	public static final String NAME = "gwtDev";
 
-	private final List<String> modules = Lists.newArrayList();
+	private final List<String> modules = new ArrayList<>();
 	private File jettyConf;
 
 	public GwtDevTask() {
@@ -67,9 +66,9 @@ public class GwtDevTask extends AbstractTask {
 		ResourceUtils.ensureDir(sdmOption.getWar());
 		ResourceUtils.ensureDir(sdmOption.getWorkDir());
 		jettyConf = new File(getProject().getBuildDir(), "putnami/conf/jetty-run-conf.xml");
-		Map<String, String> model = new ImmutableMap.Builder<String, String>()
-				.put("__WAR_FILE__", sdmOption.getWar().getAbsolutePath())
-				.build();
+		Map<String, String> model = new HashMap<String, String>();
+		model.put("__WAR_FILE__", sdmOption.getWar().getAbsolutePath());
+		
 		ResourceUtils.copy("/stub.jetty-conf.xml", jettyConf, model);
 		JavaAction sdm = execSdm();
 		if (sdm.isAlive()) {
@@ -147,8 +146,8 @@ public class GwtDevTask extends AbstractTask {
 	private JavaAction execSdm() {
 		PutnamiExtension putnami = getProject().getExtensions().getByType(PutnamiExtension.class);
 		DevOption devOption = putnami.getDev();
-		if (!Strings.isNullOrEmpty(putnami.getSourceLevel()) &&
-			Strings.isNullOrEmpty(devOption.getSourceLevel())) {
+		if (!(isNullOrEmpty(putnami.getSourceLevel())) &&
+			isNullOrEmpty(devOption.getSourceLevel())) {
 			devOption.setSourceLevel(putnami.getSourceLevel());
 		}
 
@@ -201,5 +200,9 @@ public class GwtDevTask extends AbstractTask {
 	@Input
 	public List<String> getModules() {
 		return modules;
+	}
+
+	private boolean isNullOrEmpty(String string){
+		return string == null || string.equals("");
 	}
 }

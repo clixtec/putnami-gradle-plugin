@@ -14,7 +14,7 @@
  */
 package fr.putnami.gwt.gradle.extension;
 
-import com.google.common.collect.Lists;
+import java.util.ArrayList;
 
 import org.gradle.api.Project;
 
@@ -96,7 +96,7 @@ public class DevOption extends JavaOption {
 	/**
 	 * GWT extra args, can be used to experiment arguments.
 	 */
-	private final List<String> extraArgs = Lists.newArrayList();
+	private final List<String> extraArgs = new ArrayList<>();
 
 	public String getBindAddress() {
 		return bindAddress;

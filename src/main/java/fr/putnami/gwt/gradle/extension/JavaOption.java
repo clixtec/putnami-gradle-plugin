@@ -14,14 +14,14 @@
  */
 package fr.putnami.gwt.gradle.extension;
 
-import com.google.common.collect.Lists;
+import java.util.ArrayList;
 
 import java.util.Arrays;
 import java.util.List;
 
 public class JavaOption {
 
-	private final List<String> javaArgs = Lists.newArrayList();
+	private final List<String> javaArgs = new ArrayList<>();
 
 	private String tmpDir;
 	private String userDir;

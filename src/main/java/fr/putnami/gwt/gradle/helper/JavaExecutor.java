@@ -14,8 +14,6 @@
  */
 package fr.putnami.gwt.gradle.helper;
 
-import com.google.common.base.Joiner;
-
 import org.gradle.internal.jvm.Jvm;
 
 import java.io.File;
@@ -91,7 +89,7 @@ public class JavaExecutor {
 		allArgs.add(javaExec);
 		allArgs.addAll(jvmArgs);
 		allArgs.add("-cp");
-		allArgs.add(Joiner.on(File.pathSeparator).join(classPath));
+		allArgs.add(String.join(File.pathSeparator, classPath));
 		allArgs.add(entryPoint);
 		allArgs.addAll(args);
 		
@@ -101,7 +99,7 @@ public class JavaExecutor {
 	}
 	
 	public String getCommandLine() {
-		return Joiner.on(' ').join(getCommand());
+		return String.join(" ",getCommand());
 	}
 		
 	public Process runProcess() throws IOException {

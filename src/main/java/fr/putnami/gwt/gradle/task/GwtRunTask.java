@@ -14,14 +14,13 @@
  */
 package fr.putnami.gwt.gradle.task;
 
-import com.google.common.collect.ImmutableMap;
-
 import org.gradle.api.plugins.WarPlugin;
 import org.gradle.api.tasks.TaskAction;
 import org.gradle.api.tasks.bundling.War;
 
 import java.io.File;
 import java.util.Map;
+import java.util.HashMap;
 
 import fr.putnami.gwt.gradle.action.JavaAction;
 import fr.putnami.gwt.gradle.extension.PutnamiExtension;
@@ -44,9 +43,8 @@ public class GwtRunTask extends AbstractTask {
 	public void exec() throws Exception {
 		War warTask = (War) getProject().getTasks().getByName("war");
 		jettyConf = new File(getProject().getBuildDir(), "putnami/conf/jetty-run-conf.xml");
-		Map<String, String> model = new ImmutableMap.Builder<String, String>()
-					.put("__WAR_FILE__", warTask.getArchivePath().getAbsolutePath())
-					.build();
+		Map<String, String> model = new HashMap<String, String>();
+		model.put("__WAR_FILE__", warTask.getArchivePath().getAbsolutePath());
 		ResourceUtils.copy("/stub.jetty-conf.xml", jettyConf, model);
 		JavaAction jetty = execJetty();
 		jetty.join();

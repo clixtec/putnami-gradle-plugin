@@ -14,8 +14,6 @@
  */
 package fr.putnami.gwt.gradle.task;
 
-import com.google.common.base.Strings;
-
 import org.gradle.api.Project;
 import org.gradle.api.plugins.JavaPlugin;
 import org.gradle.api.tasks.TaskAction;
@@ -39,8 +37,8 @@ public class GwtCodeServerTask extends AbstractTask {
 	@TaskAction
 	public void exec() {
 		PutnamiExtension putnami = getProject().getExtensions().getByType(PutnamiExtension.class);
-		if (!Strings.isNullOrEmpty(putnami.getSourceLevel()) &&
-			Strings.isNullOrEmpty(putnami.getDev().getSourceLevel())) {
+		if (!isNullOrEmpty(putnami.getSourceLevel()) &&
+			isNullOrEmpty(putnami.getDev().getSourceLevel())) {
 			putnami.getDev().setSourceLevel(putnami.getSourceLevel());
 		}
 
@@ -60,5 +58,9 @@ public class GwtCodeServerTask extends AbstractTask {
 	public void configureCodeServer(final Project project, final PutnamiExtension extention) {
 		final DevOption options = extention.getDev();
 		options.init(project);
+	}
+
+	private boolean isNullOrEmpty(String string){
+		return string == null || string.equals("");
 	}
 }

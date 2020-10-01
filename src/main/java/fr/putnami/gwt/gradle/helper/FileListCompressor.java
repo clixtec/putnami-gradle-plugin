@@ -14,8 +14,6 @@
  */
 package fr.putnami.gwt.gradle.helper;
 
-import com.google.common.base.Joiner;
-
 import org.gradle.internal.os.OperatingSystem;
 
 import java.io.File;
@@ -84,7 +82,7 @@ public class FileListCompressor {
 			replacedFiles.add(newFile);
 		}
 		
-		return Joiner.on(pathSeparator).join(replacedFiles);
+		return String.join(pathSeparator, replacedFiles);
 	}
 	
 	private String varReference(String var) {

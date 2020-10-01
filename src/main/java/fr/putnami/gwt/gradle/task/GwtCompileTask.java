@@ -14,8 +14,6 @@
  */
 package fr.putnami.gwt.gradle.task;
 
-import com.google.common.base.Strings;
-
 import org.gradle.api.Action;
 import org.gradle.api.Project;
 import org.gradle.api.artifacts.Configuration;
@@ -23,7 +21,6 @@ import org.gradle.api.artifacts.ProjectDependency;
 import org.gradle.api.file.FileCollection;
 import org.gradle.api.internal.ConventionMapping;
 import org.gradle.api.internal.IConventionAware;
-import org.gradle.api.internal.file.UnionFileCollection;
 import org.gradle.api.plugins.JavaPlugin;
 import org.gradle.api.plugins.JavaPluginConvention;
 import org.gradle.api.tasks.Input;
@@ -63,8 +60,8 @@ public class GwtCompileTask extends AbstractTask {
 
 		PutnamiExtension putnami = getProject().getExtensions().getByType(PutnamiExtension.class);
 		CompilerOption compilerOptions = putnami.getCompile();
-		if (!Strings.isNullOrEmpty(putnami.getSourceLevel()) &&
-			Strings.isNullOrEmpty(compilerOptions.getSourceLevel())) {
+		if (!isNullOrEmpty(putnami.getSourceLevel()) &&
+			isNullOrEmpty(compilerOptions.getSourceLevel())) {
 			compilerOptions.setSourceLevel(putnami.getSourceLevel());
 		}
 
@@ -85,9 +82,9 @@ public class GwtCompileTask extends AbstractTask {
 		options.init(project);
 		options.setLocalWorkers(evalWorkers(options));
 		
-		final FileCollection sourceJars = new UnionFileCollection();
+		final FileCollection sourceJars = project.files();
 
-		final FileCollection sources = new UnionFileCollection(project.files());
+		final FileCollection sources = project.files();
 		addSourceSet(sources, sourceJars, project, SourceSet.MAIN_SOURCE_SET_NAME);
 
 		Configuration compileClasspath = project.getConfigurations().getByName(
@@ -124,9 +121,9 @@ public class GwtCompileTask extends AbstractTask {
 	private void addSourceSet(FileCollection sources, FileCollection sourceJars, Project project, String sourceSetName) {
 		JavaPluginConvention javaConvention = project.getConvention().getPlugin(JavaPluginConvention.class);
 		SourceSet sourceSet = javaConvention.getSourceSets().getByName(sourceSetName);
-		sources.add(project.files(sourceSet.getOutput().getResourcesDir()))
-			.add(project.files(sourceSet.getOutput().getClassesDirs()))
-			.add(project.files(sourceSet.getAllSource().getSrcDirs()));
+		sources.plus(project.files(sourceSet.getOutput().getResourcesDir()))
+			.plus(project.files(sourceSet.getOutput().getClassesDirs()))
+			.plus(project.files(sourceSet.getAllSource().getSrcDirs()));
 	}
 
 	private int evalWorkers(CompilerOption options) {
@@ -160,5 +157,9 @@ public class GwtCompileTask extends AbstractTask {
 	@InputFiles
 	public FileCollection getSrc() {
 		return src;
+	}
+
+	private boolean isNullOrEmpty(String string){
+		return string == null || string.equals("");
 	}
 }

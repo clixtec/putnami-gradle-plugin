@@ -14,9 +14,6 @@
  */
 package fr.putnami.gwt.gradle.helper;
 
-import com.google.common.base.Joiner;
-import com.google.common.base.Strings;
-
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -60,7 +57,7 @@ public class PathingJarCreator implements PathAccumulator {
 		
 		Path myPath = resultingFile.getParentFile().toPath();
 		for (String path : paths) {
-			if (! seen.contains(path) && !Strings.isNullOrEmpty(path)) {
+			if (! seen.contains(path) && !isNullOrEmpty(path)) {
 				File pathFile = new File(path);
 				Path relativePath = myPath.relativize(pathFile.toPath());
 				String extra = pathFile.isDirectory() ? "/" : "";
@@ -71,9 +68,13 @@ public class PathingJarCreator implements PathAccumulator {
 		
 		Manifest manifest = new Manifest();
 		manifest.getMainAttributes().putValue(Attributes.Name.MANIFEST_VERSION.toString(), "1.0");
-		manifest.getMainAttributes().putValue(Attributes.Name.CLASS_PATH.toString(), Joiner.on(" ").join(completed));
+		manifest.getMainAttributes().putValue(Attributes.Name.CLASS_PATH.toString(), String.join(" ", completed));
 		
 		new JarOutputStream(new FileOutputStream(resultingFile), manifest).close();
+	}
+
+	private boolean isNullOrEmpty(String string){
+		return string == null || string.equals("");
 	}
 	
 }

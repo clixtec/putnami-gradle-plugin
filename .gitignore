@@ -35,6 +35,7 @@
 ehthumbs.db
 Thumbs.db
 *~
+.vscode/
 
 # build folder and IDE #
 ######################

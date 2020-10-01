@@ -14,12 +14,11 @@
  */
 package fr.putnami.gwt.gradle.extension;
 
-import com.google.common.collect.Lists;
-
 import org.gradle.api.Project;
 
 import java.io.File;
 import java.util.Arrays;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -144,7 +143,7 @@ public class CompilerOption extends JavaOption {
 	/**
 	 * GWT extra args, can be used to experiment arguments.
 	 */
-	private final List<String> extraArgs = Lists.newArrayList();
+	private final List<String> extraArgs = new ArrayList<>();
 
 	public LogLevel getLogLevel() {
 		return logLevel;

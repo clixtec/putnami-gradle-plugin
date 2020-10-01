@@ -8,6 +8,7 @@ buildscript {
 	dependencies {
 		classpath 'nl.javadude.gradle.plugins:license-gradle-plugin:0.11.0'
 		classpath "com.gradle.publish:plugin-publish-plugin:0.9.9"
+		classpath "com.google.guava:guava:29.0-jre"
 	}
 }
 
@@ -22,16 +23,16 @@ apply plugin: "com.gradle.plugin-publish"
 group = 'fr.putnami.gwt'
 version = '0.7.0-SNAPSHOT'
 
-sourceCompatibility = 1.7
-targetCompatibility = 1.7
+// sourceCompatibility = 1.7
+// targetCompatibility = 1.7
 
 repositories {
 	mavenCentral()
 }
 
 dependencies {
-	compile gradleApi()
-	compile "com.google.guava:guava:23.5-jre"
+	implementation gradleApi()
+	implementation "com.google.guava:guava:29.0-jre"
 }
 
 //checkstyle {

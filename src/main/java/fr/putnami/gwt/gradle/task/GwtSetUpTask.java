@@ -14,8 +14,6 @@
  */
 package fr.putnami.gwt.gradle.task;
 
-import com.google.common.collect.ImmutableMap;
-
 import org.gradle.api.Project;
 import org.gradle.api.internal.ConventionMapping;
 import org.gradle.api.internal.IConventionAware;
@@ -24,6 +22,7 @@ import org.gradle.api.tasks.TaskAction;
 import java.io.File;
 import java.util.List;
 import java.util.Map;
+import java.util.HashMap;
 import java.util.concurrent.Callable;
 
 import fr.putnami.gwt.gradle.extension.PutnamiExtension;
@@ -55,10 +54,9 @@ public class GwtSetUpTask extends AbstractTask {
 			File moduleDir = ResourceUtils.ensureDir(new File(srcMainJava, packagePath));
 			File clientDir = ResourceUtils.ensureDir(new File(moduleDir, "client"));
 
-			Map<String, String> model = new ImmutableMap.Builder<String, String>()
-				.put("__APP_NAME__", moduleName)
-				.put("__PKG_NAME__", packageName)
-				.build();
+			Map<String, String> model = new HashMap<String, String>();
+			model.put("__APP_NAME__", moduleName);
+			model.put("__PKG_NAME__", packageName);
 
 			ResourceUtils.copy("/skeleton/gwt.xml.txt", new File(moduleDir, moduleName + ".gwt.xml"), model);
 			ResourceUtils.copy("/skeleton/entryPoint.java.txt", new File(clientDir, moduleName + ".java"), model);

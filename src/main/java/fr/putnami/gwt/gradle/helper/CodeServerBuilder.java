@@ -14,7 +14,7 @@
  */
 package fr.putnami.gwt.gradle.helper;
 
-import com.google.common.collect.Lists;
+import java.util.ArrayList;
 
 import org.gradle.api.Action;
 import org.gradle.api.Project;
@@ -104,7 +104,7 @@ public class CodeServerBuilder extends JavaCommandBuilder {
 		ConfigurationContainer configs = project.getConfigurations();
 		Configuration compileConf = configs.getByName(JavaPlugin.COMPILE_CLASSPATH_CONFIGURATION_NAME);
 
-		final List<File> result = Lists.newArrayList();
+		final List<File> result = new ArrayList<>();
 		compileConf.getAllDependencies().withType(ProjectDependency.class, new Action<ProjectDependency>() {
 			@Override
 			public void execute(ProjectDependency dep) {

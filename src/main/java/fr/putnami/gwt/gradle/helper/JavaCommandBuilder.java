@@ -14,9 +14,7 @@
  */
 package fr.putnami.gwt.gradle.helper;
 
-import com.google.common.base.Joiner;
-import com.google.common.base.Strings;
-import com.google.common.collect.Lists;
+import java.util.ArrayList;
 
 import java.io.File;
 import java.io.IOException;
@@ -33,7 +31,7 @@ public abstract class JavaCommandBuilder {
 		
 		@Override
 		public String get() {
-			return Joiner.on(File.pathSeparator).join(paths);
+			return String.join(File.pathSeparator, paths);
 		}
 
 		@Override
@@ -52,9 +50,9 @@ public abstract class JavaCommandBuilder {
 		}
 	};
 
-	private final List<String> javaArgs = Lists.newArrayList();
+	private final List<String> javaArgs = new ArrayList<>();
 	private String mainClass;
-	private final List<String> args = Lists.newArrayList();
+	private final List<String> args = new ArrayList<>();
 	private final List<String> separateClassPath = new ArrayList<>();
 
 	private PathAccumulator pathAccumulator;
@@ -126,7 +124,7 @@ public abstract class JavaCommandBuilder {
 	}
 
 	public JavaCommandBuilder addArg(String argName, String value) {
-		if (!Strings.isNullOrEmpty(value)) {
+		if (!isNullOrEmpty(value)) {
 			this.args.add(argName);
 			this.args.add(value);
 		}
@@ -159,19 +157,19 @@ public abstract class JavaCommandBuilder {
 	}
 
 	public void configureJavaArgs(JavaOption javaOptions) {
-		if (!Strings.isNullOrEmpty(javaOptions.getMinHeapSize())) {
+		if (!isNullOrEmpty(javaOptions.getMinHeapSize())) {
 			addJavaArgs("-Xms" + javaOptions.getMinHeapSize());
 		}
-		if (!Strings.isNullOrEmpty(javaOptions.getMaxHeapSize())) {
+		if (!isNullOrEmpty(javaOptions.getMaxHeapSize())) {
 			addJavaArgs("-Xmx" + javaOptions.getMaxHeapSize());
 		}
-		if (!Strings.isNullOrEmpty(javaOptions.getMaxPermSize())) {
+		if (!isNullOrEmpty(javaOptions.getMaxPermSize())) {
 			addJavaArgs("-XX:MaxPermSize=" + javaOptions.getMaxPermSize());
 		}
-		if (!Strings.isNullOrEmpty(javaOptions.getTmpDir())) {
+		if (!isNullOrEmpty(javaOptions.getTmpDir())) {
 			addJavaArgs("-Djava.io.tmpdir=" + javaOptions.getTmpDir());
 		}
-		if (!Strings.isNullOrEmpty(javaOptions.getUserDir())) {
+		if (!isNullOrEmpty(javaOptions.getUserDir())) {
 			addJavaArgs("-Duser.dir=" + javaOptions.getUserDir());
 		}
 		if (javaOptions.isDebugJava()) {
@@ -187,4 +185,7 @@ public abstract class JavaCommandBuilder {
 		}
 	}
 
+	private boolean isNullOrEmpty(String string){
+		return string == null || string.equals("");
+	}
 }
